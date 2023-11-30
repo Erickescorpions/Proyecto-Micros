@@ -6,13 +6,22 @@
 
 // establecemos comunicacion serial rx y tx 
 #use rs232(baud=9600, xmit=PIN_C6, rcv=PIN_C7)
-#use I2C(MASTER, SDA=PIN_C4, SCL=PIN_C3, FAST)
 #include <string.h>
 #include <stdlib.h>
+
+#define LCD_RS_PIN      PIN_D0
+#define LCD_RW_PIN      PIN_D1
+#define LCD_ENABLE_PIN  PIN_D2
+#define LCD_DATA4       PIN_D4
+#define LCD_DATA5       PIN_D5
+#define LCD_DATA6       PIN_D6
+#define LCD_DATA7       PIN_D7    
+
 #include <lcd.c>
 
+
 #define BOTON_CAMBIO PIN_B0
-#define TAM_COMANDO 10
+#define TAM_COMANDO 20
 // selector = 0 -> control mediante potenciometro
 // selector = 1 -> control mediante terminal   
 int selector = 0;
@@ -78,7 +87,7 @@ int main()
    
    printf("Para cambiar un control presione el boton. \n\n");
    printf("Cuando utilice el modo terminal, usar el comando: 'pwm=80'\n");
-   while(TRUE)
+   while(1)
    { 
       recibio_comando = leer_comando(&comando);            
       
@@ -91,6 +100,7 @@ int main()
                printf(lcd_putc," Comando temperatura \n "); 
                lcd_gotoxy(1,2);
                printf(lcd_putc," Temperatura: \n ");
+               printf("comando temperatura");
                break;
                
             case 2:
@@ -98,6 +108,7 @@ int main()
                printf(lcd_putc," Comando pwm \n "); 
                lcd_gotoxy(1,2);
                printf(lcd_putc," Señal pwm: \n ");
+               printf("comando pwm");
                break;
             case 3:
                lcd_gotoxy(1,1);
@@ -157,9 +168,9 @@ int leer_comando(char* comando) {
    // se revisa si se han recibido datos desde el puerto serial
    if(kbhit()) {
       gets(comando);
-      // printf("%s", comando);
+      printf("%s", comando);
       
-       
+      return 1;
         
    }
    
@@ -176,32 +187,34 @@ int separar_comando(char* comando, char* porcentaje_pwm) {
    char *numero = strtok(0,delim);
    
    if( token ){
-       if (strcmp(token, (void*) "temperatura") == 0) {
-            return 1; 
-        }
+      printf("%s", token);
+   
+      if (strcmp(token, (void*) "temperatura") == 0) {
+         return 1; 
+      }
          
-         if (strcmp(token, (void*) "pwm") == 0) {
-            if( numero ){
+      if (strcmp(token, (void*) "pwm") == 0) {
+         if( numero ){
             strcpy(porcentaje_pwm, numero);
             return 2;
-            }             
-        }
+         }             
+      }
         
-        if (strcmp(token, (void*) "motor on") == 0) {
-            return 3; 
-        }
+      if (strcmp(token, (void*) "motor on") == 0) {
+         return 3; 
+      }
         
-         if (strcmp(token, (void*) "motor off") == 0) {
-            return 4; 
-        }
+      if (strcmp(token, (void*) "motor off") == 0) {
+         return 4; 
+      }
         
-         if (strcmp(token, (void*) "leds on") == 0) {
-            return 5; 
-        }
+      if (strcmp(token, (void*) "leds on") == 0) {
+         return 5; 
+      }
         
-         if (strcmp(token, (void*) "leds off") == 0) {
-            return 6; 
-        }
+      if (strcmp(token, (void*) "leds off") == 0) {
+         return 6; 
+      }
    }
    
    
