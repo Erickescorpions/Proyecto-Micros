@@ -28,9 +28,12 @@
 void ajustaPWM(int16 ciclo);
 int leer_comando(char* comando);
 int separar_comando(char* comando, char* porcentaje_pwm);
-void comando_pwm(int ciclo);
+void pwm(int ciclo);
 int esNumero(char* cadena);
 void limpiarLCD();
+void prenderLeds();
+void apagarLeds(); 
+void imprimirPrompt();
 
 int main()
 { 
@@ -68,8 +71,17 @@ int main()
    
    int ciclo = 0;
    
-   printf("Para cambiar un control presione el boton. \n\n");
-   printf("Cuando utilice el modo terminal, usar el comando: 'pwm=80'\n");
+   printf("Proyecto Final Microcomputadoras. \r\n\r\n");
+   printf("==================================== \r\n");
+   printf("====== INTERPRETE DE COMANDOS ====== \r\n");
+   printf("==================================== \r\n\r\n");
+   printf("1. temperatura\r\n");
+   printf("2. pwm=10\r\n");
+   printf("3. motor on\r\n");
+   printf("4. motor off\r\n");
+   printf("5. leds on\r\n");
+   printf("6. leds off\r\n\r\n");
+   imprimirPrompt();
    while(1)
    { 
       recibio_comando = leer_comando(&comando);            
@@ -84,38 +96,37 @@ int main()
                printf(lcd_putc, "Com temperatura"); 
                lcd_gotoxy(1,2);
                printf(lcd_putc, "Temperatura:");
+               imprimirPrompt();
                break;
                
             case 2:
                ciclo = atol(porcentaje_pwm);
-        
-               comando_pwm(ciclo);
+               pwm(ciclo);
+               imprimirPrompt();
                break;
             case 3:
                lcd_gotoxy(1,1);
                printf(lcd_putc, "Com motor on"); 
                lcd_gotoxy(1,2);
                printf(lcd_putc, "Motor encendido");
+               imprimirPrompt();
                break;
             case 4:
                lcd_gotoxy(1,1);
                printf(lcd_putc, "Com motor off"); 
                lcd_gotoxy(1,2);
-               printf(lcd_putc, "Motores apagado"); 
+               printf(lcd_putc, "Motores apagado");
+               imprimirPrompt();
                break;
                
             case 5:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc, "Com leds on"); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc, "Leds encendidos"); 
+               prenderLeds();
+               imprimirPrompt();
                break;
                
             case 6:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc, "Com leds off"); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc, "Leds apagados"); 
+               apagarLeds();
+               imprimirPrompt();
                break;
             
             default:
@@ -123,6 +134,8 @@ int main()
                printf(lcd_putc, "Comando no");
                lcd_gotoxy(1,2);
                printf(lcd_putc, "reconocido");
+               printf("Comando no reconocido\r\n");
+               imprimirPrompt();
          }
       }
       
@@ -145,10 +158,15 @@ int leer_comando(char* comando) {
 
 // el comando viene como "pwm=100"
 int separar_comando(char* comando, char* porcentaje_pwm) {
-   char delim[] = "=";
+   // primero separamos el prompt
    char copia_comando[TAM_COMANDO]; 
-   strcpy(copia_comando, comando); // Crea una copia para evitar modificar la cadena original
-   char *token = strtok(copia_comando, delim);
+   strcpy(copia_comando, comando);
+
+   char *comando_sin_prompt = strtok(copia_comando, (void*)">");
+   //printf("%s\r\n", comando_sin_prompt);
+   
+   char delim[] = "=";
+   char *token = strtok(comando_sin_prompt, delim);
    
    char *numero = strtok(0,delim);
    
@@ -199,7 +217,7 @@ int esNumero(char *cadena) {
     return 1;  // Todos los caracteres son dígitos, es un número
 }
 
-void comando_pwm(int ciclo) {
+void pwm(int ciclo) {
    lcd_gotoxy(1,1);
    printf(lcd_putc,"Com pwm"); 
    lcd_gotoxy(1,2);
@@ -212,9 +230,31 @@ void comando_pwm(int ciclo) {
    }
 }
 
+void prenderLeds() {
+   lcd_gotoxy(1,1);
+   printf(lcd_putc, "Com leds on"); 
+   lcd_gotoxy(1,2);
+   printf(lcd_putc, "Leds encendidos");
+   output_b(0xFF);
+}
+
+void apagarLeds() {
+   lcd_gotoxy(1,1);
+   printf(lcd_putc, "Com leds off"); 
+   lcd_gotoxy(1,2);
+   printf(lcd_putc, "Leds apagados");
+   
+   output_b(0x00);
+}
+
 void limpiarLCD() {
    lcd_gotoxy(1,1);
    printf(lcd_putc,"                "); 
    lcd_gotoxy(1,2);
    printf(lcd_putc,"                "); 
+}
+
+void imprimirPrompt() {
+   printf("Ingresa tu comando: \r\n");
+   printf(">");
 }
