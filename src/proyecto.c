@@ -1,7 +1,7 @@
 #include <16f877a.h>                      //Tipo de MicroControlador a utilizar 
 
 #fuses HS,NOPROTECT,NOWDT,NOLVP
-#device ADC=8
+#device ADC=10
 #use delay(clock=20000000)                //Frec. de Osc. 20Mhz 
 
 // establecemos comunicacion serial rx y tx 
@@ -20,10 +20,7 @@
 
 #include <lcd.c>
 
-
-#define BOTON_CAMBIO PIN_B0
 #define TAM_COMANDO 20
-
 
 void ajustaPWM(int16 ciclo);
 int leer_comando(char* comando);
@@ -34,6 +31,7 @@ void limpiarLCD();
 void prenderLeds();
 void apagarLeds(); 
 void imprimirPrompt();
+void temperatura();
 
 int main()
 { 
@@ -41,29 +39,24 @@ int main()
    char porcentaje_pwm[3] = "50";
    int recibio_comando = 0;
    
-   // inicializamos LCD
+   // ============ inicializamos LCD ============
    lcd_init(); 
 
-   // int valorAD
-   // lectura de porcentaje duty cicle mediante puerto analogico AN0
+   // ============ inicializamos ADC ============
    // establecemos puerto AN0 como analogico
-   // setup_adc_ports(AN0);      
-
+   setup_adc_ports(AN0);      
    // coloca el reloj interno del micro como fuente de reloj para el mod adc
-   // setup_adc(ADC_CLOCK_INTERNAL);
-   
+   setup_adc(ADC_CLOCK_INTERNAL);
    // coloca el puerto AN0 como entrada del modulo adc
-   // set_adc_channel(0);
-   
+   set_adc_channel(0);
    // retardo para que se configure el modulo adc
-   // delay_us(50);
+   delay_us(50);
    
+   // ============ inicializamos CCP ============
    // configuramos el modulo ccp en modo pwm
    setup_ccp1(CCP_PWM);
-   
    // configuramos trisc.2 como salida
    set_tris_d(PIN_C2); // salidas
-   
    // configuramos timer 2 con prescaler 1:16, con un periodo de 155 y un 
    // postcaler 1:1
    setup_timer_2(T2_DIV_BY_16,155,1);   
@@ -92,10 +85,7 @@ int main()
          
          switch(comando_correcto) {
             case 1:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc, "Com temperatura"); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc, "Temperatura:");
+               temperatura();
                imprimirPrompt();
                break;
                
@@ -245,6 +235,26 @@ void apagarLeds() {
    printf(lcd_putc, "Leds apagados");
    
    output_b(0x00);
+}
+
+void temperatura() {
+   /*
+      1 grado centrigrado = 10 mv
+      - Para resolucion de 10 bits con referencia de 5 volts:
+      (1 C/ 10mV) (5000 mV / 1023) * lectura ADC
+      (500 / 1023) * lectura ADC
+   */
+   // coloca el puerto AN0 como entrada del modulo adc
+   set_adc_channel(0);
+   // retardo para que se configure el modulo adc
+   delay_us(50);
+   
+   float temperatura = (float)(500 * read_adc()) / 1023.0;
+   
+   lcd_gotoxy(1,1);
+   printf(lcd_putc, "Com temperatura"); 
+   lcd_gotoxy(1,2);
+   printf(lcd_putc, "Temp: %f", temperatura);
 }
 
 void limpiarLCD() {
