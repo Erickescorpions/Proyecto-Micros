@@ -9,7 +9,6 @@
 #use I2C(MASTER, SDA=PIN_C4, SCL=PIN_C3, FAST)
 #include <string.h>
 #include <stdlib.h>
-#include <lcd.c>
 
 #define BOTON_CAMBIO PIN_B0
 #define TAM_COMANDO 10

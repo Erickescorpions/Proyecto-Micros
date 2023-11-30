@@ -117,23 +117,14 @@ int main()
                printf(lcd_putc," Motores apagados \n "); 
                break;
                
-            case 5:
+               case 5:
                lcd_gotoxy(1,1);
                printf(lcd_putc," Comando leds on  \n "); 
                lcd_gotoxy(1,2);
                printf(lcd_putc," Leds encendidos \n "); 
                break;
-               
-            case 6:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando leds off  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Leds apagados \n "); 
-               break;
+
             
-            default:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando no reconocido  \n ");             
          }
       }
       delay_us(10);

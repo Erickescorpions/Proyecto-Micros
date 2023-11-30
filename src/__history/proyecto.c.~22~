@@ -104,38 +104,14 @@ int main()
                printf(lcd_putc," Comando motor on  \n "); 
                lcd_gotoxy(1,2);
                printf(lcd_putc," Motores encendidos \n ");
-               //!               porcentaje = atol(porcentaje_pwm);
+               break;
+//!               porcentaje = atol(porcentaje_pwm);
                
 //!               if(porcentaje > 99) { 
 //!                  porcentaje = 99;
 //!               }
-               break;
-            case 4:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando motor off  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Motores apagados \n "); 
-               break;
-               
-            case 5:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando leds on  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Leds encendidos \n "); 
-               break;
-               
-            case 6:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando leds off  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Leds apagados \n "); 
-               break;
             
-            default:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando no reconocido  \n ");             
-         }
-      }
+         }            
       delay_us(10);
 
    }                              
@@ -179,28 +155,17 @@ int separar_comando(char* comando, char* porcentaje_pwm) {
        if (strcmp(token, (void*) "temperatura") == 0) {
             return 1; 
         }
-         
+        
+        if (strcmp(token, (void*) "pwm") == 0) {
+            return 2; 
+        }
+        
          if (strcmp(token, (void*) "pwm") == 0) {
             if( numero ){
             strcpy(porcentaje_pwm, numero);
-            return 2;
-            }             
-        }
-        
-        if (strcmp(token, (void*) "motor on") == 0) {
-            return 3; 
-        }
-        
-         if (strcmp(token, (void*) "motor off") == 0) {
-            return 4; 
-        }
-        
-         if (strcmp(token, (void*) "leds on") == 0) {
-            return 5; 
-        }
-        
-         if (strcmp(token, (void*) "leds off") == 0) {
-            return 6; 
+            return 3;
+            }
+             
         }
    }
    

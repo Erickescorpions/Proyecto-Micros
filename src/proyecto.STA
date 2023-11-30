@@ -1,0 +1,92 @@
+
+ROM used:   1735/8192 (21%)
+            1735/8192 (21%) including unused fragments
+
+            0.5 Average locations per line
+            3.2 Average locations per statement
+
+RAM used:   43/368 (12%) at main() level
+            92/368 (25%) worst case
+
+Stack used: 1 worst case (0 in main + 1 for interrupts)
+Stack size: 8
+
+Lines Stmts  %   Files
+----- ----- ---  -----
+  210    99  18  proyecto.c
+  684     0   0  ..\..\..\..\..\..\Program Files (x86)\PICC\Devices\16f877a.h
+  435     0   0  ..\..\..\..\..\..\Program Files (x86)\PICC\Drivers\string.h
+   32     0   0  ..\..\..\..\..\..\Program Files (x86)\PICC\Drivers\stddef.h
+   28     0   0  ..\..\..\..\..\..\Program Files (x86)\PICC\Drivers\ctype.h
+ 1352   359  66  ..\..\..\..\..\..\Program Files (x86)\PICC\Drivers\stdlib.h
+  456    84  15  ..\..\..\..\..\..\Program Files (x86)\PICC\Drivers\lcd.c
+----- -----
+ 3197   542 Total
+
+Page ROM  %  RAM    Vol Diff  Functions:
+---- --- --- ---    --- ----  ----------
+0     20   1    1             @delay_ms1
+0     68   4    5    243  7.0  strcmp
+ Inline         9    305  6.5  strpbrk
+ Inline         9    365  8.1  strspn
+ Inline         5    140  5.0  strlen
+0    261  15   10    516  8.6  strtok
+ Inline         3    596  5.9  lcd_read_byte
+0      6   0    0     59  4.2  lcd_read_nibble
+0     15   1    1    179  3.3  lcd_send_nibble
+0     66   4    3    460  4.7  lcd_send_byte
+0     62   4    6    814  7.2  lcd_init
+0     18   1    4    208  6.3  lcd_gotoxy
+0     44   3    1    354  4.7  lcd_putc
+0     20   1    0    119  2.9  interrupcion_RB0
+0    319  18   17   2266  7.6  MAIN
+0     23   1    0             @const971
+0     88   5    4             @PSTRINGC7_9600_62_63
+0     30   2    0             @const976
+0     12   1    0             @const978
+0     86   5    4             @PSTRINGC7_942
+0      9   1    0             @const980
+0      8   0    0             @const981
+0     15   1    0             @const982
+0     46   3    2             @PSTRINGC_942
+0     11   1    0    385  5.7  @const984
+0     12   1    0             @const985
+0     12   1    0    142  4.6  @const986
+0     11   1    0    968  5.6  @const987
+0     11   1    0     65  2.3  @const988
+0     10   1    0    968  5.6  @const989
+0     11   1    0    968  5.6  @const990
+0      9   1    0    968  5.6  @const991
+0     14   1    0    968  5.6  @const992
+0     23   1    2     65  2.3  leer_comando
+0    248  14   37    968  5.6  separar_comando
+0     16   1    0    968  5.6  @const1000
+0     13   1    0             @const1003
+0     14   1    0             @const1004
+0     12   1    0             @const1005
+0     13   1    0             @const1006
+ Inline         0             @cinit1
+
+Program metrics:
+    Functions               25
+    Statements              542
+    Comments                771
+    Volume (V)              24311
+    Difficulty (D)          135.9
+    Effort to implement (E) 3302842
+    Time to implement (T)   50 hours, 58 minutes
+    Est Delivered Bugs (B)  7
+    Cyclomatic Complexity   90
+    Maintainability (MI)    121
+
+ Segment     Used  Free
+-----------  ----  ----
+00000-00003     4  0  
+00004-0004E    75  0  
+0004F-007FF  1656  313  
+00800-00FFF     0  2048  
+01000-017FF     0  2048  
+01800-01FFF     0  2048  
+
+
+

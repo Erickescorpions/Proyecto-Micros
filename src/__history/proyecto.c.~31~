@@ -9,7 +9,6 @@
 #use I2C(MASTER, SDA=PIN_C4, SCL=PIN_C3, FAST)
 #include <string.h>
 #include <stdlib.h>
-#include <lcd.c>
 
 #define BOTON_CAMBIO PIN_B0
 #define TAM_COMANDO 10
@@ -39,7 +38,6 @@ int separar_comando(char* comando, char* porcentaje_pwm);
 
 int main()
 {
-   lcd_init();  
    int valorAD;
    char comando[TAM_COMANDO]; // mensaje recibio: pwm=100]
    char porcentaje_pwm[3] = "50";

@@ -130,10 +130,8 @@ int main()
                lcd_gotoxy(1,2);
                printf(lcd_putc," Leds apagados \n "); 
                break;
+
             
-            default:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando no reconocido  \n ");             
          }
       }
       delay_us(10);

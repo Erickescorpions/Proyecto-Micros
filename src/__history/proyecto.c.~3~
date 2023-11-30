@@ -20,7 +20,7 @@ int selector = 0;
 #INT_EXT
 void interrupcion_RB0() {
    if(input(BOTON_CAMBIO)) {
-//!      lcd_clear();
+      lcd_clear();
    
       if(selector == 1) {
          selector = 0;
@@ -39,7 +39,7 @@ int separar_comando(char* comando, char* porcentaje_pwm);
 
 int main()
 {
-   lcd_init();  
+  lcd_init();
    int valorAD;
    char comando[TAM_COMANDO]; // mensaje recibio: pwm=100]
    char porcentaje_pwm[3] = "50";
@@ -80,62 +80,46 @@ int main()
    printf("Cuando utilice el modo terminal, usar el comando: 'pwm=80'\n");
    while(TRUE)
    { 
-      recibio_comando = leer_comando(&comando);            
-      
-      if(recibio_comando) {
-         int comando_correcto = separar_comando(&comando, &porcentaje_pwm);
+      switch(selector) {
          
-         switch( comando_correcto ){
-            case 1:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando temperatura \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Temperatura: \n ");
-               break;
-               
-            case 2:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando pwm \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Señal pwm: \n ");
-               break;
-            case 3:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando motor on  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Motores encendidos \n ");
-               //!               porcentaje = atol(porcentaje_pwm);
-               
-//!               if(porcentaje > 99) { 
-//!                  porcentaje = 99;
-//!               }
-               break;
-            case 4:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando motor off  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Motores apagados \n "); 
-               break;
-               
-            case 5:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando leds on  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Leds encendidos \n "); 
-               break;
-               
-            case 6:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando leds off  \n "); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc," Leds apagados \n "); 
-               break;
+         // control mediante potenciometro
+         case 0:
+            valorAD = read_adc();
             
-            default:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc," Comando no reconocido  \n ");             
-         }
+            // mandamos a la funcion ajustaPWM el porcentaje respecto a 8 bits
+            // regla de 3 para obtener el porcentaje
+            porcentaje = (int16) valorAD * 100 / 256;
+            
+            printf(lcd_putc, "pwm = %d", porcentaje);
+            
+            ajustaPWM((int16) porcentaje); 
+            break;
+            
+         // control mediante terminal 
+         case 1:
+            recibio_comando = leer_comando(&comando);
+            
+            if(recibio_comando) {
+               int comando_correcto = separar_comando(&comando, &porcentaje_pwm);
+               
+               if(comando_correcto) {
+                  porcentaje = atol(porcentaje_pwm);
+         
+                  if(porcentaje > 99) { 
+                     porcentaje = 99;
+                  }
+               
+               }
+            }
+            
+            //printf("Porcentaje: %d", porcentaje);
+            
+            printf(lcd_putc, "pwm = %i", porcentaje);
+            
+            ajustaPWM((int16) porcentaje); 
+            break;
       }
+
       delay_us(10);
 
    }                              
@@ -159,8 +143,11 @@ int leer_comando(char* comando) {
       gets(comando);
       // printf("%s", comando);
       
-       
-        
+      //Comprobamos que el comando sea temperatura
+      if (strcmp(comando, "temperatura") == 0) {
+            
+            return 1;
+        }
    }
    
    return 0; // no recibio ningun comando
@@ -173,37 +160,12 @@ int separar_comando(char* comando, char* porcentaje_pwm) {
    strcpy(copia_comando, comando); // Crea una copia para evitar modificar la cadena original
    char *token = strtok(copia_comando, delim);
    
-   char *numero = strtok(0,delim);
-   
-   if( token ){
-       if (strcmp(token, (void*) "temperatura") == 0) {
-            return 1; 
-        }
-         
-         if (strcmp(token, (void*) "pwm") == 0) {
-            if( numero ){
-            strcpy(porcentaje_pwm, numero);
-            return 2;
-            }             
-        }
-        
-        if (strcmp(token, (void*) "motor on") == 0) {
-            return 3; 
-        }
-        
-         if (strcmp(token, (void*) "motor off") == 0) {
-            return 4; 
-        }
-        
-         if (strcmp(token, (void*) "leds on") == 0) {
-            return 5; 
-        }
-        
-         if (strcmp(token, (void*) "leds off") == 0) {
-            return 6; 
-        }
+   if(token && strcmp(token, (void*) "pwm") == 0) {
+      token = strtok(0, delim);
+      strcpy(porcentaje_pwm, token);
+      
+      return 1;
    }
-   
    
    return 0;
 }

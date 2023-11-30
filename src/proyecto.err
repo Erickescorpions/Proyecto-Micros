@@ -1,0 +1,6 @@
+Compiling D:\Documents\semestre2024_1\Micros\Proyecto\Proyecto-Micros\src\proyecto on 29-nov.-23 at 22:47
+>>> Warning 202 "proyecto.c" Line 43(8,15): Variable never used:   valorAD
+>>> Warning 202 "proyecto.c" Line 77(8,18): Variable never used:   porcentaje
+      Memory usage:   ROM=21%      RAM=12% - 25%
+      0 Errors,  2 Warnings.
+Build Successful.
