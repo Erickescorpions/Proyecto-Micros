@@ -1,0 +1,13 @@
+src/__history
+*.esym
+*.pdsbak
+*.ccdpjt
+*.cof
+*.err
+*.esym
+*.lst
+*.STA
+*.sym
+*.tre
+*.xsym
+*.workspace
