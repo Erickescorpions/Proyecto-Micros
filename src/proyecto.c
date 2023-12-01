@@ -20,6 +20,8 @@
 
 #include <lcd.c>
 
+#define PIN_MOTOR1 PIN_C0
+#define PIN_MOTOR2 PIN_C1
 #define TAM_COMANDO 20
 
 void ajustaPWM(int16 ciclo);
@@ -32,6 +34,9 @@ void prenderLeds();
 void apagarLeds(); 
 void imprimirPrompt();
 void temperatura();
+void comandoNoReconocido();
+void controlarMotor(int encendido);
+
 
 int main()
 { 
@@ -68,6 +73,7 @@ int main()
    printf("==================================== \r\n");
    printf("====== INTERPRETE DE COMANDOS ====== \r\n");
    printf("==================================== \r\n\r\n");
+   printf("Comandos:\r\n");
    printf("1. temperatura\r\n");
    printf("2. pwm=10\r\n");
    printf("3. motor on\r\n");
@@ -75,6 +81,7 @@ int main()
    printf("5. leds on\r\n");
    printf("6. leds off\r\n\r\n");
    imprimirPrompt();
+   
    while(1)
    { 
       recibio_comando = leer_comando(&comando);            
@@ -95,17 +102,11 @@ int main()
                imprimirPrompt();
                break;
             case 3:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc, "Com motor on"); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc, "Motor encendido");
+               controlarMotor(1);
                imprimirPrompt();
                break;
             case 4:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc, "Com motor off"); 
-               lcd_gotoxy(1,2);
-               printf(lcd_putc, "Motores apagado");
+               controlarMotor(0);
                imprimirPrompt();
                break;
                
@@ -120,11 +121,7 @@ int main()
                break;
             
             default:
-               lcd_gotoxy(1,1);
-               printf(lcd_putc, "Comando no");
-               lcd_gotoxy(1,2);
-               printf(lcd_putc, "reconocido");
-               printf("Comando no reconocido\r\n");
+               comandoNoReconocido();
                imprimirPrompt();
          }
       }
@@ -255,6 +252,31 @@ void temperatura() {
    printf(lcd_putc, "Com temperatura"); 
    lcd_gotoxy(1,2);
    printf(lcd_putc, "Temp: %f", temperatura);
+}
+
+void controlarMotor(int encendido) {
+   if(encendido) {
+      lcd_gotoxy(1,1);
+      printf(lcd_putc, "Com motor on"); 
+      lcd_gotoxy(1,2);
+      printf(lcd_putc, "Motor encendido");
+      output_high(PIN_MOTOR1);
+      output_low(PIN_MOTOR2);
+   } else {
+      lcd_gotoxy(1,1);
+      printf(lcd_putc, "Com motor off"); 
+      lcd_gotoxy(1,2);
+      printf(lcd_putc, "Motores apagado");
+      output_low(PIN_MOTOR1);
+      output_low(PIN_MOTOR2);
+   }
+}
+
+void comandoNoReconocido() {
+   lcd_gotoxy(1,1);
+   printf(lcd_putc, "Comando no");
+   lcd_gotoxy(1,2);
+   printf(lcd_putc, "reconocido");
 }
 
 void limpiarLCD() {
